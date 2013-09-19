@@ -11,11 +11,11 @@
  * @homepage  https://github.com/jquery-textfill/jquery-textfill
  * @example   http://jquery-textfill.github.io/jquery-textfill/index.html
 */
-; (function($) {
+(function($) {
   /**
   * Resizes an inner element's font so that the inner element completely fills the outer element.
-  * @param {Object} Options which are maxFontPixels (default=40), innerTag (default='span')
   * @return All outer elements processed
+ * @param options
   */
   $.fn.textfill = function(options) {
     var defaults = {
@@ -76,7 +76,7 @@
     function _sizing(prefix, ourText, func, max, maxHeight, maxWidth, minFontPixels, maxFontPixels) {
       _debug_sizing(prefix + ': ', ourText, maxHeight, maxWidth, minFontPixels, maxFontPixels);
       while (minFontPixels < maxFontPixels - 1) {
-        var fontSize = Math.floor((minFontPixels + maxFontPixels) / 2)
+        var fontSize = Math.floor((minFontPixels + maxFontPixels) / 2);
         ourText.css('font-size', fontSize);
         if (func.call(ourText) <= max) {
           minFontPixels = fontSize;
@@ -102,9 +102,8 @@
       var maxHeight = Opts.explicitHeight || $(this).height();
       var maxWidth = Opts.explicitWidth || $(this).width();
       var oldFontSize = ourText.css('font-size');
-      var fontSize;
 
-      _debug('Opts: ', Opts);
+        _debug('Opts: ', Opts);
       _debug('Vars:' +
         ' maxHeight: ' + maxHeight +
         ', maxWidth: ' + maxWidth
@@ -112,20 +111,16 @@
 
       var minFontPixels = Opts.minFontPixels;
       var maxFontPixels = Opts.maxFontPixels <= 0 ? maxHeight : Opts.maxFontPixels;
-      var HfontSize = undefined;
-      if (!Opts.widthOnly) {
-        HfontSize = _sizing('H', ourText, $.fn.height, maxHeight, maxHeight, maxWidth, minFontPixels, maxFontPixels);
-      }
       var WfontSize = _sizing('W', ourText, $.fn.width, maxWidth, maxHeight, maxWidth, minFontPixels, maxFontPixels);
-
-      if (Opts.widthOnly) {
-        ourText.css('font-size', WfontSize);
-      } else {
-        ourText.css('font-size', Math.min(HfontSize, WfontSize));
+      if (!Opts.widthOnly) {
+          var HfontSize = _sizing('H', ourText, $.fn.height, maxHeight, maxHeight, maxWidth, minFontPixels, maxFontPixels);
+          ourText.css('font-size', Math.min(HfontSize, WfontSize));
+      }else{
+          ourText.css('font-size', WfontSize);
       }
       _debug('Final: ' + ourText.css('font-size'));
 
-      if (ourText.width()  > maxWidth 
+      if (ourText.width()  > maxWidth
       || (ourText.height() > maxHeight && !Opts.widthOnly)
       ) {
         ourText.css('font-size', oldFontSize);
